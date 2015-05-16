@@ -13,7 +13,23 @@ server.listen(port, function () {
 // Routing
 app.use(express.static(__dirname + '/public'));
 
+
 // handle Sockets
 io.on('connection', function (socket) {
-  	console.log("nueva coneccion");
+  
+    /*
+    * socket events
+    */
+  
+    socket.on("calcularPosition", function(coordinate){
+      if(coordinate.x > 300 &&
+         coordinate.y > 300 &&
+         coordinate.x < 600 &&
+         coordinate.y < 600  ){
+           socket.emit("rataMensaje", { message: "rata en la jaula" });
+      }else{
+           socket.emit("rataMensaje", { message: "la rata se escapo de la jaula" });
+      }
+       
+    });
 });

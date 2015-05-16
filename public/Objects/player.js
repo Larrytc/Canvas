@@ -1,18 +1,17 @@
 function Player(arguments) {
-	this.height = 100;
-	this.width = 100;
+	this.height = 150;
+	this.width = 150;
 	this.x = 100;
 	this.y = 100;
-	this.desplazamiento = 1;
+	this.desplazamiento = 8;
 	this.doMoveLeft = false;
 	this.doMoveRight = false;
 	this.doMoveUp = false;
 	this.doMoveDown = false;
+    this.doSpace = false;
 	this.gameCtx = arguments.contexto;
 	this.imageObj = arguments.image;
 }
-
-
 
 Player.prototype.tick = function() {
 	if ( this.doMoveLeft){
@@ -30,11 +29,28 @@ Player.prototype.tick = function() {
 	if ( this.doMoveDown){
 		this.y += this.desplazamiento;
 	}
+  
+  if ( this.doSpace){
+    var positionJson = { x: this.x , y: this.y };
+    this.sendPosition(positionJson);
+    this.doSpace = false;
+  }
 };
+
+
 
 Player.prototype.draw = function() {
 	this.gameCtx.drawImage(this.imageObj, this.x, this.y, this.width, this.height);
 	//this.gameCtx.fillRect( this.x, this.y, this.width, this.height);
+};
+
+
+/*
+* Socket Player Events
+*/
+
+Player.prototype.sendPosition = function(position){
+  socket.emit("calcularPosition", position);  
 };
 
 /*
@@ -92,4 +108,8 @@ Player.prototype.keyUp = function(e) {
 	else if(keyCode == 40){
 		this.doMoveDown = false;
 	}
+  //SPACE
+  else if(keyCode == 32){
+    this.doSpace = true;
+  }
 };
