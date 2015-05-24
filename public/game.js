@@ -11,20 +11,50 @@ function load() {
     var imageObj2 = new Image();
     imageObj.src = "/image/carrito.png";
     imageObj2.src = "/image/carrito2.png";
-
-    var offsetX= (canvas.getBoundingClientRect()).left;
-    var offsetY= (canvas.getBoundingClientRect()).top;
-
-
     var fondo = new Image();
     fondo.src = "/image/fondo.jpg"; 
     
-    document.addEventListener("mouseover", function(e) {
-        var mouseX=parseInt(e.clientX-offsetX);
-        var mouseY=parseInt(e.clientY-offsetY);
-        console.log("mouseX" + mouseX + "mouseY" + mouseY )
-        //ctx.translate( mouseX, 0);
-    }, false);
+
+    var mouse = {x: 0, y: 0, prevX: 0, prevY: 0 };
+    var startMove = false;
+
+    (function enableInputs() {
+        document.addEventListener('mousemove', function (evt) {
+            if (startMove) {
+                canvas.style.cursor = "pointer";
+                var moveX = 0, moveY = 0;
+                 if( mouse.prevX < mouse.x ) {
+                    moveX = 4;
+                 }else if( mouse.prevX > mouse.x ) {
+                    moveX = -4;
+                 };
+
+                 if( mouse.prevY < mouse.y ) {
+                    moveY = 3;
+                 }else if(mouse.prevY > mouse.y  ){
+                    moveY = -3;
+                 };
+                mouse.prevX = mouse.x;
+                mouse.prevY = mouse.y;
+
+                mouse.x = evt.pageX - canvas.offsetLeft;
+                mouse.y = evt.pageY - canvas.offsetTop;
+                ctx.translate( moveX , moveY);
+            }else{
+                canvas.style.cursor = "crosshair";
+
+            }
+        }, false);
+        
+        canvas.addEventListener('mouseup', function (evt) {
+            startMove = false;
+        }, false);
+        
+        canvas.addEventListener('mousedown', function (evt) {
+            evt.preventDefault();
+            startMove = true;
+        }, false);
+    })();
     
     
   
