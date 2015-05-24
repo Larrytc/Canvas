@@ -1,57 +1,40 @@
 function Player(arguments) {
 	this.height = 150;
 	this.width = 150;
-	this.x = 100;
-	this.y = 100;
+	this.x = 150;
+	this.y = 550;
 	this.desplazamiento = 8;
 	this.doMoveLeft = false;
 	this.doMoveRight = false;
-	this.doMoveUp = false;
-	this.doMoveDown = false;
-    this.doSpace = false;
 	this.gameCtx = arguments.contexto;
 	this.imageObj = arguments.image;
+	this.imageObj2 = arguments.image2;
 }
 
+
 Player.prototype.tick = function() {
-	if ( this.doMoveLeft){
-		this.x -= this.desplazamiento;
+	if ( this.doMoveLeft){ //Izquierda
+		if(this.x > 0 ){
+		}
+			this.x -= this.desplazamiento;
+
 	}
 
-	if ( this.doMoveRight){
-		this.x += this.desplazamiento;
+	if ( this.doMoveRight){ //Derecha
+		//if(this.x + this.width < canvas.width  )
+			this.x += this.desplazamiento;
 	}
-
-	if ( this.doMoveUp){
-		this.y -= this.desplazamiento;
-	}
-
-	if ( this.doMoveDown){
-		this.y += this.desplazamiento;
-	}
-  
-  if ( this.doSpace){
-    var positionJson = { x: this.x , y: this.y };
-    this.sendPosition(positionJson);
-    this.doSpace = false;
-  }
 };
-
-
 
 Player.prototype.draw = function() {
-	this.gameCtx.drawImage(this.imageObj, this.x, this.y, this.width, this.height);
-	//this.gameCtx.fillRect( this.x, this.y, this.width, this.height);
+	if ( this.doMoveLeft){
+		this.gameCtx.translate( this.desplazamiento, 0);
+	}else if( this.doMoveRight){
+		this.gameCtx.translate( this.desplazamiento*-1, 0);
+	}
+	this.gameCtx.drawImage(this.doMoveLeft ? this.imageObj :  this.imageObj2 , this.x, this.y, this.width, this.height);	
 };
 
-
-/*
-* Socket Player Events
-*/
-
-Player.prototype.sendPosition = function(position){
-  socket.emit("calcularPosition", position);  
-};
 
 /*
 * Set event keyboard listener
@@ -76,40 +59,27 @@ Player.prototype.keyDown = function(e) {
 	if(keyCode == 37){
 		this.doMoveLeft = true;
 	}
-	//UP
-	else if(keyCode == 38){
-		this.doMoveUp = true;
-	}
 	//RIGHT
 	else if(keyCode == 39){
 		this.doMoveRight = true;
 	}
-	//DOW
-	else if(keyCode == 40){
-		this.doMoveDown = true;
+	//SPACE
+	else if(keyCode == 32){
+		//player va a tener todos los elementos de Proyectil
+		var jsonArguments = { player : this };
+		var proyectil = new Proyectil(jsonArguments);
+		objects.push(proyectil);
 	}
 };
 
 Player.prototype.keyUp = function(e) {
 	var keyCode = e.keyCode;
-	//UP KEY
-	if(keyCode == 38){
-		this.doMoveUp = false;
-	}
 	//LEFT
-	else if(keyCode == 37){
+	if(keyCode == 37){
 		this.doMoveLeft = false;
 	}
 	//RIGHT
 	else if(keyCode == 39){
 		this.doMoveRight = false;
 	}
-	//DOW
-	else if(keyCode == 40){
-		this.doMoveDown = false;
-	}
-  //SPACE
-  else if(keyCode == 32){
-    this.doSpace = true;
-  }
 };
