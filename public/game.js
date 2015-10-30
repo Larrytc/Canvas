@@ -6,7 +6,9 @@ var objects = [];
 function load() {
     var canvas = document.getElementById("canvas");
     var ctx = canvas.getContext('2d');
-    var fps = 30;
+
+    var fps = 50;
+
     var imageObj = new Image();
     var imageObj2 = new Image();
     imageObj.src = "/image/carrito.png";
@@ -16,6 +18,8 @@ function load() {
     
 
     var mouse = {x: 10, y: 10, prevX: 0, prevY: 0 };
+
+
     var startMove = false;
 
     (function enableInputs() {
